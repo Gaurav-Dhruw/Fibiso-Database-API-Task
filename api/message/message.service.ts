@@ -16,6 +16,15 @@ export const createMessage =async (data:{senderId:string, content: string, chatI
             },
             content,
         },
+        include:{
+            sender:{
+                select:{
+                    id:true,
+                    name:true,
+                    email:true,
+                }
+            }
+        }
     });
 }
 
@@ -28,6 +37,15 @@ export const findMessages = async (chatId:string)=>{
             messages:{
                 orderBy:{
                     createdAt:'desc'
+                },
+                include:{
+                    sender:{
+                        select:{
+                            id:true,
+                            name:true,
+                            email:true,
+                        }
+                    }
                 }
             }
         },

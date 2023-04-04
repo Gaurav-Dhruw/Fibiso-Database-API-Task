@@ -6,11 +6,18 @@ type createUser = (obj:{ name: string, email: string, password: string }) => any
 
 export const createUser:createUser = async ({name,email,password})=>{
     const hashed_password = await bcrypt.hash(password,10);
-    const data = await prisma.user.create({data:{
-        name,
-        email,
-        password:hashed_password
-    }});
+    const data = await prisma.user.create({
+        data:{
+            name,
+            email,
+            password:hashed_password
+        },
+        select:{
+            id:true,
+            name:true,
+            email:true,
+        }
+    });
     return data;
 }
 
@@ -20,7 +27,11 @@ export const checkRegistration = async (email:string):Promise<boolean> => {
 }
 
 export const verifyAndGetUser = async ({email,password}:{email:string,password:string}):Promise<any> => {
-    const user = await prisma.user.findUniqueOrThrow({where:{email}});
+    const user = await prisma.user.findUniqueOrThrow({
+        where:{
+            email
+        }
+    });
     
     const verified = await bcrypt.compare(password,user.password);
 
